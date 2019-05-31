@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import logo from './images/logo.jpg'
 import CompanyTable from './components/CompanyTable'
+import LoginForm from './components/LoginForm'
+
 
 
 import {
@@ -19,6 +21,7 @@ import {
   Sidebar,
   Table,
   Visibility,
+  Modal,
 } from 'semantic-ui-react'
 
 
@@ -66,7 +69,10 @@ HomepageHeading.propTypes = {
  * It can be more complicated, but you can create really flexible markup.
  */
 class DesktopContainer extends Component {
-  state = {}
+  state = {loggedIn: false}
+  componentDidMount(){
+    console.log(this.state)
+  }
 
   hideFixedMenu = () => this.setState({ fixed: false })
   showFixedMenu = () => this.setState({ fixed: true })
@@ -102,12 +108,10 @@ class DesktopContainer extends Component {
                 <Menu.Item as='a'>Companies</Menu.Item>
                 <Menu.Item as='a'>Reviews</Menu.Item>
                 <Menu.Item position='right'>
-                  <Button as='a' inverted={!fixed}>
-                    Log in
-                  </Button>
-                  <Button as='a' inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
-                    Sign Up
-                  </Button>
+                <Modal
+                  trigger={<Button as='a' inverted={!fixed}>Log in / Sign up</Button>}
+                  content={<LoginForm/>}
+                />
                 </Menu.Item>
               </Container>
             </Menu>
@@ -155,8 +159,6 @@ class MobileContainer extends Component {
           </Menu.Item>
           <Menu.Item as='a'>Companies</Menu.Item>
           <Menu.Item as='a'>Reviews</Menu.Item>
-          <Menu.Item as='a'>Log in</Menu.Item>
-          <Menu.Item as='a'>Sign Up</Menu.Item>
         </Sidebar>
 
         <Sidebar.Pusher dimmed={sidebarOpened}>
@@ -172,12 +174,10 @@ class MobileContainer extends Component {
                   <Icon name='sidebar' />
                 </Menu.Item>
                 <Menu.Item position='right'>
-                  <Button as='a' inverted>
-                    Log in
-                  </Button>
-                  <Button as='a' inverted style={{ marginLeft: '0.5em' }}>
-                    Sign Up
-                  </Button>
+                <Modal
+                  trigger={<Button as='a' inverted>Log in / Sign up</Button>}
+                  content={<LoginForm/>}
+                />
                 </Menu.Item>
               </Menu>
             </Container>
