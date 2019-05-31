@@ -23,7 +23,7 @@ export default class TopMenu extends Component {
 
         this.setState({ companies, loading: false })
 
-        console.log(companies)
+        // console.log(companies)
     }
 
     render() {
