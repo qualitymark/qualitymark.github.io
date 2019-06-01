@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import companyData from '../data/companyData.json'
+import companyData from '../database/companyData.json'
 import {
     Header,
     Table,
