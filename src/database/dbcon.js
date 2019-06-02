@@ -34,6 +34,15 @@ const addUser = async({firstName=null, lastName=null, email, username, password}
     let queryString = `INSERT INTO public.users VALUES`
 }
 
+const validateUsers = async (emailaddr, pwd) => {
+	// Added by Daniel M: Returns 0 if invalid uid / pwd and a 1 if it is valid
+	// based on front end, it looks like it is using the email as the user id.
+    let queryString = `select count(*) from public.users where email_address = '${emailaddr}' and password='${pwd}';`
+    let usercount = await queryDB(queryString)
+    return usercount
+    // console.log(users)
+}
+
 const closeConnection = async()=>{
     try{
         await client.end()
