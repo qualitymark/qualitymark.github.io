@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import db from '../database/dbcon'
 import logo from '../images/logo.jpg'
 
 
@@ -29,9 +30,10 @@ class LoginForm extends Component {
     }
 
     // Needs input validation
-    handleSignUp = (e, { name, value }) => {
+    handleSignUp = async (e, { name, value }) => {
         e.preventDefault()
         let { firstName, lastName, email, userName, password } = this.state
+    
         this.signUpSuccess()
 
     }
