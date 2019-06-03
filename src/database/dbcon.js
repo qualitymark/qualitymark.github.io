@@ -60,6 +60,12 @@ const addUser = async (firstName = null, lastName = null, email, username, passw
         throw new Error('Email already registered')
 }
 
+const getCompanies = async() =>{
+    const queryString = `SELECT * FROM public.companies`
+    const companies = queryDB(queryString)
+    return companies
+}
+
 const validateUsers = async (emailaddr, pwd) => {
     // Added by Daniel M: Returns 0 if invalid uid / pwd and a 1 if it is valid
     // based on front end, it looks like it is using the email as the user id.
@@ -74,7 +80,10 @@ const closeConnection = async () => {
         await client.end()
     } catch (e) { console.error(e) }
 }
-module.exports = {addUser:addUser}
+module.exports = {
+    addUser:addUser, 
+    getCompanies:getCompanies
+}
 // (async () => {
 //     // let x = await emailExists('js@me.com')
 //     // console.log(x)
