@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import companyData from '../database/companyData.json'
+import hp from 'humanize-plus'
+import axios from 'axios'
 import {
     Header,
     Table,
@@ -9,22 +11,31 @@ export default class TopMenu extends Component {
 
     state = { loading: true }
 
-    componentDidMount() {
-        let companies = companyData
-        companies.forEach(company => {
-            company.inequalityRating = Math.floor(Math.random() * 100)
+    async componentDidMount() {
+        const companiesRes = await axios.get('https://quality-mark-server.herokuapp.com/companies')
+        let companies = companiesRes.data.slice(0,11)
+         companies.forEach(company => {
             company.numReviews = Math.floor(Math.random() * 100) + 1
-            company.salaryRatio = Math.floor(Math.random() * 2000) + 50
-
         })
+
+        // })
+        // let companies = companyData
+        // companies.forEach(company => {
+        //     company.inequalityRating = Math.floor(Math.random() * 100)
+        //     company.numReviews = Math.floor(Math.random() * 100) + 1
+        //     company.salaryRatio = Math.floor(Math.random() * 2000) + 50
+
+        // })
         companies = companies.sort((a, b) => {
-            return b.inequalityRating - a.inequalityRating
+            return b.rating - a.rating
         })
 
         this.setState({ companies, loading: false })
 
         // console.log(companies)
     }
+
+    formatRevenue = number => hp.compactInteger(number,2)
 
     render() {
         const companies = this.state.companies
@@ -49,14 +60,14 @@ export default class TopMenu extends Component {
                                 <Table.Row>
                                     <Table.Cell>
                                         <Header as='h3' textAlign='center'>
-                                            {company.company}
+                                            {company.name}
                                         </Header>
                                     </Table.Cell>
                                     <Table.Cell textAlign='center'>{company.industry}</Table.Cell>
                                     <Table.Cell textAlign='center'> {company.location}</Table.Cell>
-                                    <Table.Cell textAlign='center'>{company.revenue}</Table.Cell>
-                                    <Table.Cell textAlign='center' width={2}>{company.salaryRatio}</Table.Cell>
-                                    <Table.Cell textAlign='center'>{company.inequalityRating}
+                                    <Table.Cell textAlign='center'>{this.formatRevenue(company.revenue)}</Table.Cell>
+                                    <Table.Cell textAlign='center' width={2}>{(company.ceosalary/company.mediansalary).toFixed(2)}</Table.Cell>
+                                    <Table.Cell textAlign='center'>{company.rating}
                                         <br />
                                         <a href='#'>{company.numReviews} reviews</a>
                                     </Table.Cell>
