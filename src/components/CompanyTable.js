@@ -37,6 +37,8 @@ export default class TopMenu extends Component {
 
     formatRevenue = number => hp.compactInteger(number,2)
 
+    formatRatio = number => hp.formatNumber(number,2)
+
     render() {
         const companies = this.state.companies
         const loading = this.state.loading
@@ -66,7 +68,7 @@ export default class TopMenu extends Component {
                                     <Table.Cell textAlign='center'>{company.industry}</Table.Cell>
                                     <Table.Cell textAlign='center'> {company.location}</Table.Cell>
                                     <Table.Cell textAlign='center'>{this.formatRevenue(company.revenue)}</Table.Cell>
-                                    <Table.Cell textAlign='center' width={2}>{(company.ceosalary/company.mediansalary).toFixed(2)}</Table.Cell>
+                                    <Table.Cell textAlign='center' width={2}>{this.formatRatio(company.ceosalary/company.mediansalary)}</Table.Cell>
                                     <Table.Cell textAlign='center'>{company.rating}
                                         <br />
                                         <a href='#'>{company.numReviews} reviews</a>
