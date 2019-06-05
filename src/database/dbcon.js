@@ -26,6 +26,14 @@ const getUsers = async () => {
     // console.log(users)
 }
 
+//Totally testing
+const getCompanies = async () => {
+    const queryString = 'SELECT name FROM public.companies;'
+    const companies = await queryDB(queryString)
+    return companies
+    // console.log(companies)
+}
+
 const emailExists = async (email) => {
     const queryString = `SELECT * FROM public.users WHERE email_address = '${email}';`
     const users = await queryDB(queryString)
