@@ -28,9 +28,9 @@ const getUsers = async () => {
 
 const emailExists = async (email) => {
     const queryString = `SELECT * FROM public.users WHERE email_address = '${email}';`
-    const user = await queryDB(queryString)
-    console.log(user.length ? true : false)
-    return user.length ? true : false
+    const users = await queryDB(queryString)
+    console.log(users.length ? true : false)
+    return users.length ? true : false
 }
 
 const addUser = async (firstName = null, lastName = null, email, username, password) => {
