@@ -12,7 +12,7 @@ class Search extends Component {
  }
 
 //Not sure how to connect database???
-/*const { API_KEY } = 
+/*const { API_KEY } = process.env
 const API_URL = ''
 
   getInfo = () => {
