@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import logo from './images/logo.jpg'
 import CompanyTable from './components/CompanyTable'
 import LoginForm from './components/LoginForm'
-
+import CompanySearch from './components/CompanySearch'
 
 
 import {
