@@ -54,7 +54,7 @@ class LoginForm extends Component {
             password: password
         })
         const login = loginRes.data
-        console.log(login)
+        // console.log(login)
         login.error ? this.loginFailure(login.error) : this.loginSuccess(login)
 
     }
