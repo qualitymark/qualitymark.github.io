@@ -1,57 +1,70 @@
+import _ from 'lodash'
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Search, Grid } from 'semantic-ui-react'
-import db from '../database/dbcon'
-
-
-
-
-const initialState = { isLoading: false, results: [], value: '' }
-
-async componentDidMount() {
-        const compSearch = await axios.get('https://quality-mark-server.herokuapp.com/companies')
-        let companies = compSearch.data
-        })
-        this.setState({ companies, loading: false })
-
-        // console.log(companies)
-    }
-
+import { Search } from 'semantic-ui-react'
 
 export default class SearchExampleStandard extends Component {
-  state = initialState
 
-  handleResultSelect = (e, { result }) => this.setState({ value: result })
+  // Set initial state of variables to empty/blank when component mounts for the first time
+  state = {
+    loading: false,
+    results: [],
+    value: ''
+  }
+
+  // Get list of companies from API and process them so they are in the format expected by
+  // Semantic UI's <Search/> component.
+  async componentDidMount() {
+    const compSearch = await axios.get('https://quality-mark-server.herokuapp.com/companies')
+    const companies = compSearch.data
+    this.setState({loading: false })
+    this.processCompanies(companies)
+
+    // console.log('Companies from CompanySearch.js:', companies)
+  }
+
+  // Search component requires that the list being searched has the format 
+  // {title: name, description: company description}
+  processCompanies = (companies) =>{
+    const companiesRet = companies.map(company =>{
+      return{
+        title:company.name,
+        description: company.comments
+      }
+    })
+    this.setState({companies: companiesRet, loading: false })
+
+  }
+  
+  handleResultSelect = (e, { result }) => this.setState({ value: result.title })
 
   handleSearchChange = (e, { value }) => {
-    this.setState({ isLoading: true, value })
+    this.setState({ loading: true, value })
 
+    // Explicitly set values of state to default (no values) 
     setTimeout(() => {
-      if (this.state.value.length < 1) return this.setState(initialState)
+      if (this.state.value.length < 1) return this.setState({loading:false, results:[], value:''})
 
       const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
       const isMatch = result => re.test(result.title)
 
       this.setState({
-        isLoading: false,
-        results: _.filter(source, isMatch),
+        loading: false,
+        results: _.filter(this.state.companies, isMatch),
       })
     }, 300)
   }
 
 
-
-
+  // Removed Grid, Header, and Segment. These were used to render the real time results display
+  // for the example search component on the semantic ui documentation 
+  // (The part that says State and Options and looks like JSON)
   render() {
-    const { isLoading, value, results } = this.state
-
+    const { loading, value, results } = this.state
     return (
-            <search/>
-      <Grid>
-        <Grid.Column width={6}>
           <Search
             input={{ icon: 'search', iconPosition: 'left' }}
-            loading={isLoading}
+            loading={loading}
             onResultSelect={this.handleResultSelect}
             onSearchChange={_.debounce(this.handleSearchChange, 500, {
               leading: true,
@@ -60,20 +73,6 @@ export default class SearchExampleStandard extends Component {
             value={value}
             {...this.props}
           />
-        </Grid.Column>
-        <Grid.Column width={10}>
-          <Segment>
-            <Header>State</Header>
-            <pre style={{ overflowX: 'auto' }}>
-              {JSON.stringify(this.state, null, 2)}
-            </pre>
-            <Header>Options</Header>
-            <pre style={{ overflowX: 'auto' }}>
-              {JSON.stringify(source, null, 2)}
-            </pre>
-          </Segment>
-        </Grid.Column>
-      </Grid>
     )
   }
 }
