@@ -21,7 +21,7 @@ async componentDidMount() {
 export default class SearchExampleStandard extends Component {
   state = initialState
 
-  handleResultSelect = (e, { result }) => this.setState({ value: result.title })
+  handleResultSelect = (e, { result }) => this.setState({ value: result })
 
   handleSearchChange = (e, { value }) => {
     this.setState({ isLoading: true, value })
