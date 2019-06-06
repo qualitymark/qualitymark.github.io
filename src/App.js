@@ -75,7 +75,7 @@ class DesktopContainer extends Component {
 
   handleLogin = (user) => {
     this.setState({loggedIn: true, modalOpen:false, user:user[0]})
-    console.log('logged in', this.state.user)
+    // console.log('logged in', this.state.user)
   }
 
   hideFixedMenu = () => this.setState({ fixed: false })
@@ -111,6 +111,7 @@ class DesktopContainer extends Component {
                 </Menu.Item>
                 <Menu.Item as='a'>Companies</Menu.Item>
                 <Menu.Item as='a'>Reviews</Menu.Item>
+                <Menu.Item style={{display:'absolute', top:'12px'}}><CompanySearch/></Menu.Item>
                 <Menu.Item position='right'>
                 <Modal
                   trigger={<Button onClick={!this.state.loggedIn ? ()=>this.setState({modalOpen:true}) : null} as='a' inverted={!fixed}>{this.state.loggedIn ? `${this.state.user.username}` : `Log in / Sign up`}</Button>}
@@ -136,7 +137,14 @@ DesktopContainer.propTypes = {
 }
 
 class MobileContainer extends Component {
-  state = {}
+  state = {
+    loggedIn: false,
+
+  }
+  handleLogin = (user) => {
+    this.setState({loggedIn: true, modalOpen:false, user:user[0]})
+    console.log('logged in', this.state.user)
+  }
 
   handleSidebarHide = () => this.setState({ sidebarOpened: false })
 
@@ -165,6 +173,8 @@ class MobileContainer extends Component {
           </Menu.Item>
           <Menu.Item as='a'>Companies</Menu.Item>
           <Menu.Item as='a'>Reviews</Menu.Item>
+          <Menu.Item><CompanySearch/></Menu.Item>
+
         </Sidebar>
 
         <Sidebar.Pusher dimmed={sidebarOpened}>
@@ -181,8 +191,10 @@ class MobileContainer extends Component {
                 </Menu.Item>
                 <Menu.Item position='right'>
                 <Modal
-                  trigger={<Button as='a' inverted>Log in / Sign up</Button>}
-                  content={<LoginForm/>}
+                  trigger={<Button onClick={!this.state.loggedIn ? ()=>this.setState({modalOpen:true}) : null} as='a' inverted>{this.state.loggedIn ? `${this.state.user.username}` : `Log in / Sign up`}</Button>}
+                  open={this.state.modalOpen}
+                  onClose={()=>this.setState({modalOpen:false})}
+                  content={<LoginForm handleLogin={this.handleLogin}/>}
                 />
                 </Menu.Item>
               </Menu>
