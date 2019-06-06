@@ -1,58 +1,86 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Form } from 'semantic-ui-react'
+import { Search, Grid, Header, Segment } from 'semantic-ui-react'
 import db from '../database/dbcon'
-import Suggestions from 'components/Suggestions'
+export default Search
+import _ from 'lodash'
+import faker from 'faker'
 
+import React, { Component } from 'react'
+import { Search, Grid, Header, Segment } from 'semantic-ui-react'
 
-class Search extends Component {
- state = {
-   query: '',
-   results: []
- }
+const source = _.times(5, () => ({
+  title: faker.company.companyName(),
+  description: faker.company.catchPhrase(),
+  image: faker.internet.avatar(),
+  price: faker.finance.amount(0, 100, 2, '$'),
+}))
 
-//Not sure how to connect database???
-/*const { API_KEY } = process.env
-const API_URL = ''
+const initialState = { isLoading: false, results: [], value: '' }
 
-  getInfo = () => {
-    axios.get(`${API_URL}?api_key=${API_KEY}&prefix=${this.state.query}&limit=7`)
-      .then(({ data }) => {
-        this.setState({
-          results: data.data 
-		  
-        })
+export default class SearchExampleStandard extends Component {
+  state = initialState
+
+  handleResultSelect = (e, { result }) => this.setState({ value: result.title })
+
+  handleSearchChange = (e, { value }) => {
+    this.setState({ isLoading: true, value })
+
+    setTimeout(() => {
+      if (this.state.value.length < 1) return this.setState(initialState)
+
+      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+      const isMatch = result => re.test(result.title)
+
+      this.setState({
+        isLoading: false,
+        results: _.filter(source, isMatch),
       })
-  }*/
-
-
-handleInputChange = () => {
-    this.setState({
-      query: this.search.value
-    }, () => {
-      if (this.state.query && this.state.query.length > 1) {
-        if (this.state.query.length % 2 === 0) {
-          this.getInfo()
-        }
-      } else if (!this.state.query) {
-      }
-    })
+    }, 300)
   }
 
+async componentDidMount() {
+        const compSearch = await axios.get('https://quality-mark-server.herokuapp.com/companies.name')
+        let companies = compSearch.data
+        })
+        this.setState({ companies, loading: false })
 
- render() {
-   return (
-     <form>
-       <input
-         placeholder="Search for..."
-         ref={input => this.search = input}
-         onChange={this.handleInputChange}
-       />
-	   <Suggestions results={this.state.results} />
-       <p>{this.state.query}</p>
-     </form>
-   )
- }
+        // console.log(companies)
+    }
+
+
+
+  render() {
+    const { isLoading, value, results } = this.state
+
+    return (
+      <Grid>
+        <Grid.Column width={6}>
+          <Search
+            input={{ icon: 'search', iconPosition: 'left' }}
+            loading={isLoading}
+            onResultSelect={this.handleResultSelect}
+            onSearchChange={_.debounce(this.handleSearchChange, 500, {
+              leading: true,
+            })}
+            results={results}
+            value={value}
+            {...this.props}
+          />
+        </Grid.Column>
+        <Grid.Column width={10}>
+          <Segment>
+            <Header>State</Header>
+            <pre style={{ overflowX: 'auto' }}>
+              {JSON.stringify(this.state, null, 2)}
+            </pre>
+            <Header>Options</Header>
+            <pre style={{ overflowX: 'auto' }}>
+              {JSON.stringify(source, null, 2)}
+            </pre>
+          </Segment>
+        </Grid.Column>
+      </Grid>
+    )
+  }
 }
-
-export default Search
