@@ -71,11 +71,6 @@ export default class SearchExampleStandard extends Component {
   // for the example search component on the semantic ui documentation 
   // (The part that says State and Options and looks like JSON)
   render() {
-     const element = (<div>Text from Element</div>)    
-                                   return (<div className="comptext">    
-                                   <h3>First Component</h3>      
-                                   {this.props.displaytext}      
-                                   {element}    </div>)  
     const { loading, value, results } = this.state
     return (
       <Search
