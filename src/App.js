@@ -56,17 +56,7 @@ const HomepageHeading = ({ mobile }) => (
         marginTop: mobile ? '0.5em' : '1.5em',
       }}
     />
-  
-  
-      <div>
-        <SearchBox placeholder="Enter search term" value={this.state.searchBoxVal} onchange={this.handleSearchBoxValChange}
-        searchBoxStyles={{color:"dodgerBlue", height:"24px", border:"1px solid blue"}}
-        searchButtonStyles={{background:"dodgerBlue", border:"1px solid blue"}}
-        searchIconStyles={{color:"#fff", height:"24px", lineHeight:"24px"}}
-        OnSubmit={this.handleSearchBoxSubmit}
-        />
-      </div>
-    
+
   </Container>
 )
 
