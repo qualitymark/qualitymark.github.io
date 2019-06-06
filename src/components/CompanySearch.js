@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Search, Grid, Header, Segment } from 'semantic-ui-react'
+import { Search, Grid } from 'semantic-ui-react'
 import db from '../database/dbcon'
-export default Search
-import _ from 'lodash'
-import faker from 'faker'
+
 
 
 
 const initialState = { isLoading: false, results: [], value: '' }
 
 async componentDidMount() {
-        const compSearch = await axios.get('https://quality-mark-server.herokuapp.com/companies.name')
+        const compSearch = await axios.get('https://quality-mark-server.herokuapp.com/companies')
         let companies = compSearch.data
         })
         this.setState({ companies, loading: false })
@@ -48,6 +46,7 @@ export default class SearchExampleStandard extends Component {
     const { isLoading, value, results } = this.state
 
     return (
+            <search/>
       <Grid>
         <Grid.Column width={6}>
           <Search
