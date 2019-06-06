@@ -19,7 +19,6 @@ import {
   Responsive,
   Segment,
   Sidebar,
-  Table,
   Visibility,
   Modal,
 } from 'semantic-ui-react'
@@ -34,7 +33,7 @@ const getWidth = () => window.innerWidth
  */
 const HomepageHeading = ({ mobile }) => (
   <Container text>
-  <Image centered bordered rounded size='small' src={logo}/>
+    <Image centered bordered rounded size='small' src={logo} />
 
     <Header
       as='h1'
@@ -69,14 +68,30 @@ HomepageHeading.propTypes = {
  * It can be more complicated, but you can create really flexible markup.
  */
 class DesktopContainer extends Component {
-  state = {loggedIn: false}
-  componentDidMount(){
+  state = {
+    loggedIn: false,
+    home: true,
+    companies: false,
+    reviews: false,
+    currentSelection: 'home'
+  }
+  componentDidMount() {
   }
 
   handleLogin = (user) => {
-    this.setState({loggedIn: true, modalOpen:false, user:user[0]})
+    this.setState({ loggedIn: true, modalOpen: false, user: user[0] })
     // console.log('logged in', this.state.user)
   }
+
+  handleItemClick = ((e, { name }) => {
+    if (this.state.currentSelection !== name) {
+      const prevSelection = this.state.currentSelection
+      this.setState({ 
+        [name]: !this.state[name], 
+        currentSelection: name, 
+        [prevSelection]: !this.state[prevSelection]})
+    }
+  })
 
   hideFixedMenu = () => this.setState({ fixed: false })
   showFixedMenu = () => this.setState({ fixed: true })
@@ -95,7 +110,7 @@ class DesktopContainer extends Component {
           <Segment
             inverted
             textAlign='center'
-            style={{ minHeight: 400, padding: '1em 0em'}}
+            style={{ minHeight: 400, padding: '1em 0em' }}
             vertical
           >
             <Menu
@@ -106,19 +121,19 @@ class DesktopContainer extends Component {
               size='large'
             >
               <Container>
-                <Menu.Item as='a' active>
+                <Menu.Item name='home' onClick={this.handleItemClick} as='a' active={this.state.home}>
                   Home
                 </Menu.Item>
-                <Menu.Item as='a'>Companies</Menu.Item>
-                <Menu.Item as='a'>Reviews</Menu.Item>
-                <Menu.Item style={{display:'absolute', top:'12px'}}><CompanySearch/></Menu.Item>
+                <Menu.Item name='companies' onClick={this.handleItemClick} as='a' active={this.state.companies}>Companies</Menu.Item>
+                <Menu.Item name='reviews' onClick={this.handleItemClick} as='a' active={this.state.reviews}>Reviews</Menu.Item>
+                <Menu.Item style={{ display: 'absolute', top: '12px' }}><CompanySearch /></Menu.Item>
                 <Menu.Item position='right'>
-                <Modal
-                  trigger={<Button onClick={!this.state.loggedIn ? ()=>this.setState({modalOpen:true}) : null} as='a' inverted={!fixed}>{this.state.loggedIn ? `${this.state.user.username}` : `Log in / Sign up`}</Button>}
-                  open={this.state.modalOpen}
-                  onClose={()=>this.setState({modalOpen:false})}
-                  content={<LoginForm handleLogin={this.handleLogin}/>}
-                />
+                  <Modal
+                    trigger={<Button onClick={!this.state.loggedIn ? () => this.setState({ modalOpen: true }) : null} as='a' inverted={!fixed}>{this.state.loggedIn ? `${this.state.user.username}` : `Log in / Sign up`}</Button>}
+                    open={this.state.modalOpen}
+                    onClose={() => this.setState({ modalOpen: false })}
+                    content={<LoginForm handleLogin={this.handleLogin} />}
+                  />
                 </Menu.Item>
               </Container>
             </Menu>
@@ -142,7 +157,7 @@ class MobileContainer extends Component {
 
   }
   handleLogin = (user) => {
-    this.setState({loggedIn: true, modalOpen:false, user:user[0]})
+    this.setState({ loggedIn: true, modalOpen: false, user: user[0] })
     console.log('logged in', this.state.user)
   }
 
@@ -173,7 +188,7 @@ class MobileContainer extends Component {
           </Menu.Item>
           <Menu.Item as='a'>Companies</Menu.Item>
           <Menu.Item as='a'>Reviews</Menu.Item>
-          <Menu.Item><CompanySearch/></Menu.Item>
+          <Menu.Item><CompanySearch /></Menu.Item>
 
         </Sidebar>
 
@@ -190,12 +205,12 @@ class MobileContainer extends Component {
                   <Icon name='sidebar' />
                 </Menu.Item>
                 <Menu.Item position='right'>
-                <Modal
-                  trigger={<Button onClick={!this.state.loggedIn ? ()=>this.setState({modalOpen:true}) : null} as='a' inverted>{this.state.loggedIn ? `${this.state.user.username}` : `Log in / Sign up`}</Button>}
-                  open={this.state.modalOpen}
-                  onClose={()=>this.setState({modalOpen:false})}
-                  content={<LoginForm handleLogin={this.handleLogin}/>}
-                />
+                  <Modal
+                    trigger={<Button onClick={!this.state.loggedIn ? () => this.setState({ modalOpen: true }) : null} as='a' inverted>{this.state.loggedIn ? `${this.state.user.username}` : `Log in / Sign up`}</Button>}
+                    open={this.state.modalOpen}
+                    onClose={() => this.setState({ modalOpen: false })}
+                    content={<LoginForm handleLogin={this.handleLogin} />}
+                  />
                 </Menu.Item>
               </Menu>
             </Container>
@@ -227,17 +242,17 @@ ResponsiveContainer.propTypes = {
 
 const App = () => (
   <ResponsiveContainer>
-  <Container fluid style={{padding:'2em 2em'}}>
-  <Divider
-          as='h4'
-          className='header'
-          horizontal
-          style={{ margin: '3em 0em', textTransform: 'uppercase' }}
-        >
-          <p>Company Inequality Rankings</p>
-        </Divider>
-    <CompanyTable/>
-  </Container>
+    <Container fluid style={{ padding: '2em 2em' }}>
+      <Divider
+        as='h4'
+        className='header'
+        horizontal
+        style={{ margin: '3em 0em', textTransform: 'uppercase' }}
+      >
+        <p>Company Inequality Rankings</p>
+      </Divider>
+      <CompanyTable />
+    </Container>
     <Segment style={{ paddingTop: '8em' }} vertical>
       <Grid celled='internally' columns='equal' stackable>
         <Grid.Row textAlign='center'>
@@ -258,10 +273,10 @@ const App = () => (
         </Grid.Row>
       </Grid>
     </Segment>
-    
+
     <Segment style={{ padding: '8em 0em' }} vertical>
       <Container text>
-      <Divider
+        <Divider
           as='h4'
           className='header'
           horizontal
@@ -273,9 +288,9 @@ const App = () => (
           Tackling Income Inequality Requires New Policies
         </Header>
         <p style={{ fontSize: '1.33em' }}>
-        The hollowing out of the middle class, rising social and political tension, 
-        lack of education, globalization, and rapid technological change are just a 
-        few of the many drivers of growing income inequality.
+          The hollowing out of the middle class, rising social and political tension,
+          lack of education, globalization, and rapid technological change are just a
+          few of the many drivers of growing income inequality.
         </p>
         <Button as='a' href='https://blogs.imf.org/2019/05/15/tackling-income-inequality-requires-new-policies/' target='blank' size='large'>
           Read More
@@ -285,8 +300,8 @@ const App = () => (
           How to Keep Corporate Power in Check
         </Header>
         <p style={{ fontSize: '1.33em' }}>
-        People are becoming concerned that the rising power of big successful companies
-         may be behind some of the recent sluggish economic growth and rising income inequality.
+          People are becoming concerned that the rising power of big successful companies
+           may be behind some of the recent sluggish economic growth and rising income inequality.
         </p>
         <Button as='a' href='https://blogs.imf.org/2019/04/03/how-to-keep-corporate-power-in-check/' target='blank' size='large'>
           Read More
