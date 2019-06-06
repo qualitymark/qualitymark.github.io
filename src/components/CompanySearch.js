@@ -6,17 +6,19 @@ export default Search
 import _ from 'lodash'
 import faker from 'faker'
 
-import React, { Component } from 'react'
-import { Search, Grid, Header, Segment } from 'semantic-ui-react'
 
-const source = _.times(5, () => ({
-  title: faker.company.companyName(),
-  description: faker.company.catchPhrase(),
-  image: faker.internet.avatar(),
-  price: faker.finance.amount(0, 100, 2, '$'),
-}))
 
 const initialState = { isLoading: false, results: [], value: '' }
+
+async componentDidMount() {
+        const compSearch = await axios.get('https://quality-mark-server.herokuapp.com/companies.name')
+        let companies = compSearch.data
+        })
+        this.setState({ companies, loading: false })
+
+        // console.log(companies)
+    }
+
 
 export default class SearchExampleStandard extends Component {
   state = initialState
@@ -39,14 +41,6 @@ export default class SearchExampleStandard extends Component {
     }, 300)
   }
 
-async componentDidMount() {
-        const compSearch = await axios.get('https://quality-mark-server.herokuapp.com/companies.name')
-        let companies = compSearch.data
-        })
-        this.setState({ companies, loading: false })
-
-        // console.log(companies)
-    }
 
 
 
