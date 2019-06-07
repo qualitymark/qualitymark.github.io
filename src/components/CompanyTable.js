@@ -5,6 +5,7 @@ import axios from 'axios'
 import {
     Header,
     Table,
+    Loader
 } from 'semantic-ui-react'
 
 export default class TopMenu extends Component {
@@ -30,7 +31,7 @@ export default class TopMenu extends Component {
             return b.rating - a.rating
         })
 
-        this.setState({ companies, loading: false })
+        this.setState({ companies,loading: false })
 
         // console.log(companies)
     }
@@ -79,7 +80,7 @@ export default class TopMenu extends Component {
                     </Table.Body>
                 </Table>
             )
-        } else { return null }
+        } else { return <Loader style={{position:'relative', top:'20px', paddingBottom:0}}active content='Loading Companies'/> }
     }
 }
 
