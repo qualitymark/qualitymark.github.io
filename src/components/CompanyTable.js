@@ -10,12 +10,13 @@ import {
 
 export default class TopMenu extends Component {
 
-    state = { loading: true }
+    state = { loading: true, showAll: this.props.showAll }
 
+    // Get all companies from the database and add a random number of reviews for display purposes
     async componentDidMount() {
         const companiesRes = await axios.get('https://quality-mark-server.herokuapp.com/companies')
-        let companies = companiesRes.data.slice(0,11)
-         companies.forEach(company => {
+        let companies = companiesRes.data
+        companies.forEach(company => {
             company.numReviews = Math.floor(Math.random() * 100) + 1
         })
 
@@ -27,21 +28,49 @@ export default class TopMenu extends Component {
         //     company.salaryRatio = Math.floor(Math.random() * 2000) + 50
 
         // })
-        companies = companies.sort((a, b) => {
-            return b.rating - a.rating
-        })
+        this.setState({ companies, })
+        this.processCompanies()
 
-        this.setState({ companies,loading: false })
 
         // console.log(companies)
     }
 
-    formatRevenue = number => hp.compactInteger(number,2)
 
-    formatRatio = number => hp.formatNumber(number,2)
+    // Handle change between top 10 companies and all companies
+    componentDidUpdate(prevProps) {
+        if (prevProps.showAll !== this.props.showAll) {
+            this.processCompanies()
+        }
+    }
+
+    // If all companies in the DB are being rendered, sort alphabetically, otherwise, 
+    // show the top 10 companies sorted in descending order by their inequality rating
+    processCompanies = () => {
+        this.setState({loading: true })
+        const showAll = this.props.showAll
+        const companies = this.state.companies
+        let companiesRet
+
+        if (showAll) {
+            companiesRet = companies.sort((a, b) => {
+                return a.name < b.name ? -1 : 1
+            })
+        } else {
+            companiesRet = companies.slice(0, 11)
+            companiesRet = companiesRet.sort((a, b) => {
+                return b.rating - a.rating
+            })
+        }
+        this.setState({ companiesRet, loading: false })
+    }
+
+
+    formatRevenue = number => hp.compactInteger(number, 2)
+
+    formatRatio = number => hp.formatNumber(number, 2)
 
     render() {
-        const companies = this.state.companies
+        const companies = this.state.companiesRet
         const loading = this.state.loading
         if (!loading) {
             return (
@@ -69,7 +98,7 @@ export default class TopMenu extends Component {
                                     <Table.Cell textAlign='center'>{company.industry}</Table.Cell>
                                     <Table.Cell textAlign='center'> {company.location}</Table.Cell>
                                     <Table.Cell textAlign='center'>{this.formatRevenue(company.revenue)}</Table.Cell>
-                                    <Table.Cell textAlign='center' width={2}>{this.formatRatio(company.ceosalary/company.mediansalary)}</Table.Cell>
+                                    <Table.Cell textAlign='center' width={2}>{this.formatRatio(company.ceosalary / company.mediansalary)}</Table.Cell>
                                     <Table.Cell textAlign='center'>{company.rating}
                                         <br />
                                         <a href='#'>{company.numReviews} reviews</a>
@@ -80,7 +109,7 @@ export default class TopMenu extends Component {
                     </Table.Body>
                 </Table>
             )
-        } else { return <Loader style={{position:'relative', top:'20px', paddingBottom:0}}active content='Loading Companies'/> }
+        } else { return <Loader style={{ position: 'relative', top: '20px', paddingBottom: 0 }} active content='Loading Companies' /> }
     }
 }
 
