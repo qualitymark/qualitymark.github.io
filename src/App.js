@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import logo from './images/logo.jpg'
 import CompanyTable from './components/CompanyTable'
+import ReviewTable from './components/ReviewTable'
 import LoginForm from './components/LoginForm'
 import CompanySearch from './components/CompanySearch'
 
@@ -21,6 +22,7 @@ import {
   Sidebar,
   Visibility,
   Modal,
+  Dropdown
 } from 'semantic-ui-react'
 
 
@@ -87,10 +89,11 @@ class DesktopContainer extends Component {
   handleItemClick = ((e, { name }) => {
     if (this.state.currentSelection !== name) {
       const prevSelection = this.state.currentSelection
-      this.setState({ 
-        [name]: !this.state[name], 
-        currentSelection: name, 
-        [prevSelection]: !this.state[prevSelection]})
+      this.setState({
+        [name]: !this.state[name],
+        currentSelection: name,
+        [prevSelection]: !this.state[prevSelection]
+      })
     }
   })
 
@@ -100,6 +103,7 @@ class DesktopContainer extends Component {
   render() {
     const { children } = this.props
     const { fixed } = this.state
+    const { state } = this.state
 
     return (
       <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
@@ -130,18 +134,30 @@ class DesktopContainer extends Component {
                 <Menu.Item style={{ display: 'absolute', top: '12px' }}><CompanySearch /></Menu.Item>
                 <Menu.Item position='right'>
                   <Modal
-                    trigger={<Button onClick={!this.state.loggedIn ? () => this.setState({ modalOpen: true }) : null} as='a' inverted={!fixed}>{this.state.loggedIn ? `${this.state.user.username}` : `Log in / Sign up`}</Button>}
+                    trigger={<Button onClick={!this.state.loggedIn ? () => this.setState({ modalOpen: true }) : null} as='a' inverted={!fixed}>{this.state.loggedIn ? <Dropdown text={this.state.user.username}><Dropdown.Menu ><Dropdown.Item onClick={()=>this.setState({loggedIn:false})}text='Logout'></Dropdown.Item></Dropdown.Menu></Dropdown> : `Log in / Sign up`}</Button>}
                     open={this.state.modalOpen}
                     onClose={() => this.setState({ modalOpen: false })}
                     content={<LoginForm handleLogin={this.handleLogin} />}
                   />
                 </Menu.Item>
+
               </Container>
             </Menu>
             <HomepageHeading />
           </Segment>
         </Visibility>
-
+        <Container fluid style={{ padding: '2em 2em' }}>
+          <Divider
+            as='h4'
+            className='header'
+            horizontal
+            style={{ margin: '3em 0em', textTransform: 'uppercase' }}
+          >
+            <p>{this.state.currentSelection === 'home' ? 'Top 10 Inequality Rankings' : this.state.currentSelection === 'companies' ? 'All Tracked Companies' : 'Latest Reviews'}</p>
+          </Divider>
+          {this.state.home || this.state.companies ? <CompanyTable currentSelection = {this.state.currentSelection} showAll={ this.state.currentSelection === 'home' ? false : this.state.currentSelection === 'companies' ? true : true}/> : <ReviewTable/>}
+          
+        </Container>
         {children}
       </Responsive>
     )
@@ -207,7 +223,7 @@ class MobileContainer extends Component {
                 </Menu.Item>
                 <Menu.Item position='right'>
                   <Modal
-                    trigger={<Button onClick={!this.state.loggedIn ? () => this.setState({ modalOpen: true }) : null} as='a' inverted>{this.state.loggedIn ? `${this.state.user.username}` : `Log in / Sign up`}</Button>}
+                    trigger={<Button onClick={!this.state.loggedIn ? () => this.setState({ modalOpen: true }) : <Dropdown/>} as='a' inverted>{this.state.loggedIn ? `${this.state.user.username}` : `Log in / Sign up`}</Button>}
                     open={this.state.modalOpen}
                     onClose={() => this.setState({ modalOpen: false })}
                     content={<LoginForm handleLogin={this.handleLogin} />}
@@ -243,17 +259,7 @@ ResponsiveContainer.propTypes = {
 
 const App = () => (
   <ResponsiveContainer>
-    <Container fluid style={{ padding: '2em 2em' }}>
-      <Divider
-        as='h4'
-        className='header'
-        horizontal
-        style={{ margin: '3em 0em', textTransform: 'uppercase' }}
-      >
-        <p>Company Inequality Rankings</p>
-      </Divider>
-      <CompanyTable />
-    </Container>
+
     <Segment style={{ paddingTop: '8em' }} vertical>
       <Grid celled='internally' columns='equal' stackable>
         <Grid.Row textAlign='center'>
